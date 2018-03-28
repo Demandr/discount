@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Discount</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="login_text_licence">Регестрируясь в програме я подтверждаю согласия с правилами и условиями проекта</string>
+    <string name="login_number">Ваш номер телефона</string>
+    <string name="login_next">ДАЛЕЕ  \u0020</string>
+
+    <string name="sign_up_confirm">ПОДТВЕРДИТЬ  \u0020</string>
+    <string name="sign_up_ok">ВОЙТИ В АКАУНТ  \u0020</string>
+    <string name="sign_up_password_sms">Пароль из СМС</string>
+    <string name="sign_up_create_password">Создайте пароль для входа в акаунт</string>
+
+
+    <string name="sign_in_password">Введите пароль</string>
+    <string name="sign_in_forgot_password">Забыли пароль ?</string>
+    <string name="sign_in_ok">ВОЙТИ  \u0020</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="profile_user_connect_fb">Соединить с  \u0020</string>
+
+
+</resources>
