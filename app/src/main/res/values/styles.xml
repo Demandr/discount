@@ -16,7 +16,7 @@
 
     </style>
     
-    <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/bg_start</item>
     </style>
 
