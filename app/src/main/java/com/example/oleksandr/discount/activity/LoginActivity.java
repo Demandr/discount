@@ -13,9 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.oleksandr.discount.R;
+import com.example.oleksandr.discount.db.User;
 import com.example.oleksandr.discount.db.UserDatabase;
 import com.example.oleksandr.discount.utils.MaskUtils;
 import com.example.oleksandr.discount.utils.Utils;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableMaybeObserver;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -61,11 +66,25 @@ public class LoginActivity extends AppCompatActivity {
         if (number.length() < 12) {
             Utils.showToast(this, "Номер слишком короткий");
         } else {
-            if (db.phoneDao().getByNumber(MaskUtils.getNumber()) != null) {
-                startNextActivity(SignInActivity.class);
-            } else {
-                startNextActivity(SignUpActivity.class);
-            }
+            db.phoneDao().getByNumberRx(MaskUtils.getNumber())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new DisposableMaybeObserver<User>() {
+                        @Override
+                        public void onSuccess(User user) {
+                            startNextActivity(SignInActivity.class);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            startNextActivity(SignUpActivity.class);
+                        }
+                    });
         }
     }
 

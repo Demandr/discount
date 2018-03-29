@@ -15,7 +15,16 @@ import com.example.oleksandr.discount.db.UserDatabase;
 import com.example.oleksandr.discount.utils.MaskUtils;
 import com.example.oleksandr.discount.utils.Utils;
 
+import java.util.Random;
+
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class SignUpActivity extends AppCompatActivity {
+
     private EditText mEditTextPassword;
     private EditText textNumber;
     private TextView mTextPassword;
@@ -24,6 +33,9 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Random r = new Random();
+        int passwordSms = r.nextInt(10000 - 1000 + 1) + 1000;
+        Utils.ShowNotification(this, "" + passwordSms);
         setContentView(R.layout.activity_sign_up);
         textNumber = findViewById(R.id.etext_number);
         MaskUtils maskUtils = new MaskUtils();
@@ -41,33 +53,53 @@ public class SignUpActivity extends AppCompatActivity {
             if (event.getAction() != KeyEvent.ACTION_DOWN)
                 return false;
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                pressBtnConfirm(db, MaskUtils.getNumber());
+                pressBtnConfirm(db, MaskUtils.getNumber(), passwordSms);
                 return true;
             }
             return false;
         });
         mTextConfirm.setOnClickListener(v -> {
-            pressBtnConfirm(db, MaskUtils.getNumber());
+            pressBtnConfirm(db, MaskUtils.getNumber(), passwordSms);
         });
     }
 
-    private void pressBtnConfirm(UserDatabase db, String number) {
+    private void pressBtnConfirm(UserDatabase db, String number, int sms) {
         if (mTextConfirm.getText().toString().equals(getString(R.string.sign_up_confirm))) {
-            if (mEditTextPassword.getText().toString().equals("1111")) {
+            if (Integer.parseInt(mEditTextPassword.getText().toString()) == sms) {
+                Utils.cancelNotification(this);
                 showHideComponents();
             } else {
+                mEditTextPassword.setText("");
                 Utils.showAlert(this, "Пароль из SMS введен не правельно");
             }
         } else {
             if (mEditTextPassword.getText().length() < 6) {
                 Utils.showToast(this, "Пароль слишком короткий");
             } else {
-                db.phoneDao().insert(new User(number, mEditTextPassword.getText().toString()));
-                Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(LoginActivity.EXTRA_NUMBER, MaskUtils.getNumber());
-                startActivity(intent);
-                finish();
+
+                Completable.fromAction(() -> db.phoneDao()
+                        .insert(new User(number, mEditTextPassword.getText().toString())))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new CompletableObserver() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                Intent intent = new Intent(SignUpActivity.this, UserProfileActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                        | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra(LoginActivity.EXTRA_NUMBER, MaskUtils.getNumber());
+                                startActivity(intent);
+                                finish();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                            }
+                        });
             }
         }
     }

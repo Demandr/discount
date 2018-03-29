@@ -1,6 +1,5 @@
 package com.example.oleksandr.discount.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -8,9 +7,14 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.oleksandr.discount.R;
+import com.example.oleksandr.discount.db.User;
 import com.example.oleksandr.discount.db.UserDatabase;
 import com.example.oleksandr.discount.utils.MaskUtils;
 import com.example.oleksandr.discount.utils.Utils;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableMaybeObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -56,14 +60,28 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void pressBtnConfirm(UserDatabase db, String number) {
-        if (mPassword.getText().toString().equals(db.phoneDao().getByNumber(number).getPassword())) {
-            Intent intent = new Intent(this, UserProfileActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(LoginActivity.EXTRA_NUMBER, MaskUtils.getNumber());
-            startActivity(intent);
-            finish();
-        } else {
-            Utils.showToast(this, "Неверный пароль");
-        }
+        db.phoneDao().getByNumberRx(number)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableMaybeObserver<User>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        if (mPassword.getText().toString().equals(user.getPassword())) {
+                            Utils.showAlert(SignInActivity.this, "В розробці");
+                        } else {
+                            Utils.showToast(SignInActivity.this, "Неверный пароль");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

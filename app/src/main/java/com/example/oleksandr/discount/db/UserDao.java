@@ -7,6 +7,8 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import io.reactivex.Maybe;
+
 @Dao
 public interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -19,6 +21,6 @@ public interface UserDao {
     void update(User user);
 
     @Query("SELECT * FROM users WHERE number = :number")
-    User getByNumber(String number);
+    Maybe<User> getByNumberRx(String number);
 
 }

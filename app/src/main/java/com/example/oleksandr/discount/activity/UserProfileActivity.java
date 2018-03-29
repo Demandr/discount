@@ -1,5 +1,6 @@
 package com.example.oleksandr.discount.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,6 +37,12 @@ public class UserProfileActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        TextView textExit = findViewById(R.id.text_exit_account);
+        textExit.setOnClickListener(v ->{
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
     }
 
     @Override
