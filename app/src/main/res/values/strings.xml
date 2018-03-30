@@ -24,5 +24,18 @@
 
     <string name="profile_user_connect_fb">Соединить с  \u0020</string>
 
+    <string-array name="region_array">
+        <item>Украина</item>
+        <item>Россия</item>
+        <item>Англия</item>
+        <item>Франция</item>
+        <item>Германия</item>
+        <item>США</item>
+        <item>Китай</item>
+    </string-array>
 
+    <string-array name="sex_array">
+        <item>Мужской</item>
+        <item>Женской</item>
+    </string-array>
 </resources>

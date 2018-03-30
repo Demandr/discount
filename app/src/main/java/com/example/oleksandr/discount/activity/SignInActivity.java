@@ -1,5 +1,6 @@
 package com.example.oleksandr.discount.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -67,7 +68,13 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(User user) {
                         if (mPassword.getText().toString().equals(user.getPassword())) {
-                            Utils.showAlert(SignInActivity.this, "В розробці");
+//                            Utils.showAlert(SignInActivity.this, "В розробці");
+                            Intent intent = new Intent(SignInActivity.this, UserProfileActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra(LoginActivity.EXTRA_NUMBER, MaskUtils.getNumber());
+                            startActivity(intent);
+                            finish();
                         } else {
                             Utils.showToast(SignInActivity.this, "Неверный пароль");
                         }
