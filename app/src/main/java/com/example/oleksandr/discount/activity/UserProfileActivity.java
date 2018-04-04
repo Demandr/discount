@@ -27,12 +27,15 @@ import com.example.oleksandr.discount.R;
 
 import java.io.IOException;
 
+import static com.example.oleksandr.discount.utils.Keys.DATE_PICKER;
+import static com.example.oleksandr.discount.utils.Keys.NUMBER;
+
 public class UserProfileActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener,
         DatePickerFragment.OnCompleteListener {
 
-    private ImageView imageUser;
-    private TextView textDate;
+    private ImageView imUser;
+    private TextView tvDate;
 
     private static final int PICK_PHOTO = 1;
 
@@ -45,7 +48,7 @@ public class UserProfileActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         TextView textIdNumber = findViewById(R.id.text_id_number);
-        textIdNumber.setText("ID" + getIntent().getStringExtra(LoginActivity.EXTRA_NUMBER));
+        textIdNumber.setText("ID" + getIntent().getStringExtra(NUMBER));
 
         AutoCompleteTextView textRegion = findViewById(R.id.text_region);
         textRegion.setAdapter(new ArrayAdapter<>(this,
@@ -61,10 +64,10 @@ public class UserProfileActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        textDate = findViewById(R.id.text_date);
-        textDate.setOnClickListener(this);
-        imageUser = findViewById(R.id.image_user);
-        imageUser.setOnClickListener(this);
+        tvDate = findViewById(R.id.text_date);
+        tvDate.setOnClickListener(this);
+        imUser = findViewById(R.id.image_user);
+        imUser.setOnClickListener(this);
         Spinner spinner = findViewById(R.id.text_sex);
         ArrayAdapter arrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spiner_item,
@@ -135,7 +138,7 @@ public class UserProfileActivity extends AppCompatActivity
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                imageUser.setImageBitmap(bitmap);
+                imUser.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -158,13 +161,13 @@ public class UserProfileActivity extends AppCompatActivity
                 break;
             case R.id.text_date:
                 DialogFragment newFragment = new DatePickerFragment();
-                newFragment.show(getSupportFragmentManager(), "datePicker");
+                newFragment.show(getSupportFragmentManager(), DATE_PICKER);
                 break;
         }
     }
 
     @Override
     public void onComplete(String time) {
-        textDate.setText(time);
+        tvDate.setText(time);
     }
 }

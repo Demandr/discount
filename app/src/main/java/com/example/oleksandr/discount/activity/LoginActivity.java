@@ -22,13 +22,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.example.oleksandr.discount.utils.Keys.NUMBER;
 
-public class LoginActivity extends AppCompatActivity {
-    public static final String EXTRA_NUMBER = "NUMBER";
 
-    private EditText mTextNumber;
-    private TextView mTextNext;
-    private TextView mTextLicence;
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener {
+    private EditText etNumber;
+    private TextView tvLicence;
+    private UserDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,35 +36,44 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        UserDatabase db = UserDatabase.getPhoneDatabase(this);
+        db = UserDatabase.getPhoneDatabase(this);
 
-        mTextNumber = findViewById(R.id.etext_number);
-        mTextNext = findViewById(R.id.text_next);
-        mTextLicence = findViewById(R.id.text_licence);
+        etNumber = findViewById(R.id.et_number);
+        TextView textNext = findViewById(R.id.text_next);
+        tvLicence = findViewById(R.id.text_licence);
         setTextLicence(getString(R.string.login_text_licence));
 
         MaskUtils maskUtils = new MaskUtils();
-        maskUtils.setNumberMask(mTextNumber);
+        maskUtils.setNumberMask(etNumber);
 
-        mTextNumber.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() != KeyEvent.ACTION_DOWN)
-                return false;
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                pressBtnNext(db, MaskUtils.getNumber());
-                return true;
-            }
-            return false;
-        });
-
-        mTextNext.setOnClickListener(v -> {
-            pressBtnNext(db, MaskUtils.getNumber());
-        });
+        etNumber.setOnKeyListener(this);
+        textNext.setOnClickListener(this);
 
 
     }
 
-    private void pressBtnNext(UserDatabase db, String number) {
-        if (number.length() < 12) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.text_next:
+                pressBtnNext();
+                break;
+        }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() != KeyEvent.ACTION_DOWN)
+            return false;
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            pressBtnNext();
+            return true;
+        }
+        return false;
+    }
+
+    private void pressBtnNext() {
+        if (MaskUtils.getNumber().length() < 12) {
             Utils.showToast(this, "Номер слишком короткий");
         } else {
             db.phoneDao().getByNumberRx(MaskUtils.getNumber())
@@ -91,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startNextActivity(Class mClass) {
         Intent intent = new Intent(this, mClass);
-        String number = mTextNumber.getText().toString();
-        intent.putExtra(EXTRA_NUMBER, number);
+        String number = etNumber.getText().toString();
+        intent.putExtra(NUMBER, number);
         startActivity(intent);
     }
 
@@ -112,7 +121,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
         ss.setSpan(clickableSpan, 49, 71, 0);
-        mTextLicence.setText(ss);
-        mTextLicence.setMovementMethod(LinkMovementMethod.getInstance());
+        tvLicence.setText(ss);
+        tvLicence.setMovementMethod(LinkMovementMethod.getInstance());
     }
+
 }

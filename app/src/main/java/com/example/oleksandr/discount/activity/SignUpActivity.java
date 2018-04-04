@@ -23,62 +23,84 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class SignUpActivity extends AppCompatActivity {
+import static com.example.oleksandr.discount.utils.Keys.NUMBER;
 
-    private EditText mEditTextPassword;
-    private EditText textNumber;
-    private TextView mTextPassword;
-    private TextView mTextConfirm;
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
+
+
+    private EditText etPassword;
+    private EditText etNumber;
+    private TextView tvPassword;
+    private TextView tvConfirm;
+    private UserDatabase db;
+    private int passwordSms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Random r = new Random();
-        int passwordSms = r.nextInt(10000 - 1000 + 1) + 1000;
-        Utils.ShowNotification(this, "" + passwordSms);
+        sendPasswordSms();
         setContentView(R.layout.activity_sign_up);
-        textNumber = findViewById(R.id.etext_number);
+        etNumber = findViewById(R.id.et_number);
         MaskUtils maskUtils = new MaskUtils();
-        maskUtils.blockEditText(textNumber);
-        textNumber.setText(getIntent().getStringExtra(LoginActivity.EXTRA_NUMBER));
+        maskUtils.blockEditText(etNumber);
+        etNumber.setText(getIntent().getStringExtra(NUMBER));
+        db = UserDatabase.getPhoneDatabase(this);
 
-        UserDatabase db = UserDatabase.getPhoneDatabase(this);
+        etPassword = findViewById(R.id.et_password);
+        tvConfirm = findViewById(R.id.text_confirm);
+        tvPassword = findViewById(R.id.text_password);
 
-        mEditTextPassword = findViewById(R.id.etext_password);
-        mTextConfirm = findViewById(R.id.text_confirm);
-        mTextPassword = findViewById(R.id.text_password);
+        findViewById(R.id.image_back).setOnClickListener(this);
+        tvConfirm.setOnClickListener(this);
+        etPassword.setOnKeyListener(this);
 
-        findViewById(R.id.image_back).setOnClickListener(v -> finish());
-        mEditTextPassword.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() != KeyEvent.ACTION_DOWN)
-                return false;
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                pressBtnConfirm(db, MaskUtils.getNumber(), passwordSms);
-                return true;
-            }
-            return false;
-        });
-        mTextConfirm.setOnClickListener(v -> {
-            pressBtnConfirm(db, MaskUtils.getNumber(), passwordSms);
-        });
     }
 
-    private void pressBtnConfirm(UserDatabase db, String number, int sms) {
-        if (mTextConfirm.getText().toString().equals(getString(R.string.sign_up_confirm))) {
-            if (Integer.parseInt(mEditTextPassword.getText().toString()) == sms) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.text_confirm:
+                pressBtnConfirm();
+                break;
+            case R.id.image_back:
+                finish();
+                break;
+        }
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() != KeyEvent.ACTION_DOWN)
+            return false;
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            pressBtnConfirm();
+            return true;
+        }
+        return false;
+    }
+
+    private void sendPasswordSms(){
+        Random r = new Random();
+        passwordSms = r.nextInt(10000 - 1000 + 1) + 1000;
+        Utils.ShowNotification(this, "" + passwordSms);
+    }
+
+    private void pressBtnConfirm() {
+        if (tvConfirm.getText().toString().equals(getString(R.string.sign_up_confirm))) {
+            if (etPassword.getText().toString().equals(passwordSms + "")  ) {
                 Utils.cancelNotification(this);
                 showHideComponents();
             } else {
-                mEditTextPassword.setText("");
+                etPassword.setText("");
                 Utils.showAlert(this, "Пароль из SMS введен не правельно");
             }
         } else {
-            if (mEditTextPassword.getText().length() < 6) {
+            if (etPassword.getText().length() < 6) {
                 Utils.showToast(this, "Пароль слишком короткий");
             } else {
 
                 Completable.fromAction(() -> db.phoneDao()
-                        .insert(new User(number, mEditTextPassword.getText().toString())))
+                        .insert(new User(MaskUtils.getNumber(), etPassword.getText().toString())))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(new CompletableObserver() {
@@ -87,7 +109,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 Intent intent = new Intent(SignUpActivity.this, UserProfileActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                                         | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra(LoginActivity.EXTRA_NUMBER, MaskUtils.getNumber());
+                                intent.putExtra(NUMBER, MaskUtils.getNumber());
                                 startActivity(intent);
                                 finish();
                             }
@@ -102,16 +124,19 @@ public class SignUpActivity extends AppCompatActivity {
                         });
             }
         }
+
+
     }
 
     private void showHideComponents() {
-        mEditTextPassword.setText("");
-        mEditTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        mTextPassword.setText(getString(R.string.sign_up_create_password));
-        mTextPassword.setMinLines(2);
-        mTextConfirm.setText(getString(R.string.sign_up_ok));
+        etPassword.setText("");
+        etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        tvPassword.setText(getString(R.string.sign_up_create_password));
+        tvPassword.setMinLines(2);
+        tvConfirm.setText(getString(R.string.sign_up_ok));
         findViewById(R.id.image_back).setVisibility(View.GONE);
     }
+
 
 
 }
