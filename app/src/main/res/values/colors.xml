@@ -7,4 +7,10 @@
     <color name="colorBgBlue">#20415b</color>
     <color name="colorTextWhite">#ffffff</color>
     <color name="colorTextYellow">#ffe100</color>
+    <color name="colorNavBg">#2A5577</color>
+    <color name="colorIconBg">#5f91b9</color>
+    <color name="colorNavItemPressed">#88751B</color>
+    <color name="colorNavItemPressedRed">#FF0000</color>
+    <color name="colorNavNumber">#5E91B8</color>
+    <color name="colorNavNotification">#EBECEC</color>
 </resources>

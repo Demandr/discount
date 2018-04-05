@@ -15,7 +15,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".activity.LoginActivity"
+                android:name=".activities.login.LoginActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppTheme.Launcher"
                 android:windowSoftInputMode="stateHidden">
@@ -26,19 +26,19 @@
             </intent-filter>
         </activity>
         <activity
-                android:name=".activity.SignUpActivity"
+                android:name=".activities.login.SignUpActivity"
                 android:screenOrientation="portrait"
                 android:theme="@style/AppThemeNoActionBar"
                 android:windowSoftInputMode="">
         </activity>
         <activity
-                android:name=".activity.SignInActivity"
+                android:name=".activities.login.SignInActivity"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode=""
                 android:theme="@style/AppThemeNoActionBar">
         </activity>
         <activity
-                android:name=".activity.UserProfileActivity"
+                android:name=".activities.UserProfileActivity"
                 android:label="@string/title_activity_profile"
                 android:screenOrientation="portrait"
                 android:windowSoftInputMode="stateHidden"

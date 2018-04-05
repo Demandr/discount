@@ -2,37 +2,38 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
         <item
-                android:id="@+id/nav_camera"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="Import"/>
+                android:id="@+id/nav_company"
+                android:icon="@drawable/ico_company"
+                android:title="Компании"/>
         <item
-                android:id="@+id/nav_gallery"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Gallery"/>
+                android:id="@+id/nav_news"
+                android:icon="@drawable/ico_news"
+                android:title="Лента новостей"/>
         <item
-                android:id="@+id/nav_slideshow"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="Slideshow"/>
+                android:id="@+id/nav_bonus"
+                android:icon="@drawable/ico_bonus"
+                android:title="Биржа бонусов"/>
         <item
-                android:id="@+id/nav_manage"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Tools"/>
+                android:id="@+id/nav_chat"
+                android:icon="@drawable/ico_chat"
+                android:title="Чаты"/>
+        <item
+                android:id="@+id/nav_contacts"
+                android:icon="@drawable/ico_contacts"
+                android:title="Контакты"/>
+        <item
+                android:id="@+id/nav_discount"
+                android:icon="@drawable/ico_discount"
+                android:title="Скидочные карты"/>
+        <item
+                android:id="@+id/nav_history_operation"
+                android:icon="@drawable/ico_histiry_operation"
+                android:title="История операций"/>
+        <item
+                android:id="@+id/nav_voucher"
+                android:icon="@drawable/ico_voucher"
+                android:title="Ваучеры и акции"/>
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                    android:id="@+id/nav_share"
-                    android:icon="@drawable/ic_menu_share"
-                    android:title="Share"/>
-            <item
-                    android:id="@+id/nav_send"
-                    android:icon="@drawable/ic_menu_send"
-                    android:title="Send"/>
-        </menu>
-    </item>
-
 </menu>

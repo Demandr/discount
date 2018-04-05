@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" >
+        <shape  android:shape="rectangle" >
+            <solid android:color="@color/colorNavItemPressed" />
+            <stroke android:width="0.2dp" android:color="@color/colorNavItemPressedRed"/>
+        </shape>
+    </item>
+    <item>
+        <color android:color="@color/colorBgBlue"/>
+    </item>
+</selector>

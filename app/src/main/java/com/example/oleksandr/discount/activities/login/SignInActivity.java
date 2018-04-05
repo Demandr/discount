@@ -1,4 +1,4 @@
-package com.example.oleksandr.discount.activity;
+package com.example.oleksandr.discount.activities.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.example.oleksandr.discount.R;
+import com.example.oleksandr.discount.activities.UserProfileActivity;
 import com.example.oleksandr.discount.db.User;
 import com.example.oleksandr.discount.db.UserDatabase;
 import com.example.oleksandr.discount.utils.MaskUtils;
